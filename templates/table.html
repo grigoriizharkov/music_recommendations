@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TRACKS</title>
+</head>
+<body>
+<ul>
+        {% for track in tracks %}
+        <li>{{ track }}</li>
+        {% endfor %}
+    </ul>
+<a href="{{request.META.HTTP_REFERER|escape}}">Назад</a>
+</body>
+</html>
