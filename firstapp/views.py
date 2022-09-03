@@ -1,45 +1,59 @@
 import requests
 from bs4 import BeautifulSoup
-from django.shortcuts import render
 from django.http import HttpResponse
-from .forms import LinkForm
+from django.shortcuts import render
+from .forms import UserForm
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import NearestNeighbors
 
 
+# TODO
+#  1) dataset cleaning (done, check for recommendation quality)
+#  3) expansion dataset via spotipy
+#  4) frontend using React?
+
+
 def parsing(request):
     if request.method == "POST":
-        url = request.POST.get("url")
-        page = requests.get(url)
-        soup = BeautifulSoup(page.content, "html.parser")
+        user_form = UserForm(request.POST)
 
-        tracks = soup.find_all("div", class_="d-track__overflowable-wrapper deco-typo-secondary block-layout")
+        if user_form.is_valid():
+            url = user_form.cleaned_data['url']
+            number = user_form.cleaned_data['number']
 
-        tracks_list, artists_list = list(), list()
+            page = requests.get(url)
+            soup = BeautifulSoup(page.content, "html.parser")
 
-        for track in tracks:
-            track_name = track.find("a", class_="d-track__title deco-link deco-link_stronger")
-            artist_name = track.find("a", class_="deco-link deco-link_muted")
+            tracks = soup.find_all("div", class_="d-track__overflowable-wrapper deco-typo-secondary block-layout")
 
-            tracks_list.append(track_name.text.lstrip().rstrip())
-            artists_list.append(artist_name.text.lstrip().rstrip())
+            tracks_list, artists_list = list(), list()
 
-        return prediction(request, tracks_list, artists_list)
+            for track in tracks:
+                track_name = track.find("a", class_="d-track__title deco-link deco-link_stronger")
+                artist_name = track.find("a", class_="deco-link deco-link_muted")
+
+                tracks_list.append(track_name.text.lstrip().rstrip())
+                artists_list.append(artist_name.text.lstrip().rstrip())
+
+            return prediction(request, tracks_list, artists_list, number)
+        else:
+            return HttpResponse("Invalid data")
     else:
-        link_form = LinkForm()
-        return render(request, "form.html", {"form": link_form})
+        user_form = UserForm()
+
+        return render(request, "form.html", {"form": user_form})
 
 
-def prediction(request, tracks: list, artists: list):
-    data = pd.read_csv("SpotifyFeatures.csv")
+def prediction(request, tracks: list, artists: list, number=10):
+    data = pd.read_csv("clean_data.csv")
     sample = pd.DataFrame({"artist_name": artists, "track_name": tracks})
 
     songs_indexes = list()
-    for index, composition in sample.iterrows():
-        res = data[(data['track_name'] == composition['track_name']) &
-                   (data['artist_name'] == composition['artist_name'])]
+    for row in sample.itertuples():
+        res = data[(data['track_name'] == row[2]) &
+                   (data['artist_name'] == row[1])]
         if len(res) != 0:
             songs_indexes.extend(list(res.index))
 
@@ -47,7 +61,7 @@ def prediction(request, tracks: list, artists: list):
     scaler = StandardScaler()
     x_scaled = scaler.fit_transform(x)
 
-    nbrs = NearestNeighbors(n_neighbors=20, algorithm='ball_tree', n_jobs=-1).fit(x_scaled)
+    nbrs = NearestNeighbors(n_neighbors=number, algorithm='auto', metric='cosine', n_jobs=-1).fit(x_scaled)
 
     songs_vectors = list()
     for index in songs_indexes:
@@ -58,14 +72,11 @@ def prediction(request, tracks: list, artists: list):
 
     distances, indices = nbrs.kneighbors([sample_vector])
 
-    artists_p = list()
-    tracks_p = list()
-    for index in indices:
-        artists_p = data.iloc[index]['artist_name'].array
-        tracks_p = data.iloc[index]['track_name'].array
+    recommendations = list()
+    for index in indices[0]:
+        artists_name = data.iloc[index]['artist_name']
+        tracks_name = data.iloc[index]['track_name']
 
-    data_set = set()
-    for i in range(artists_p.size):
-        data_set.add(str(artists_p[i]) + ' - ' + str(tracks_p[i]))
+        recommendations.append(artists_name + ' - ' + tracks_name)
 
-    return render(request, "table.html", context={"tracks": data_set})
+    return render(request, "table.html", context={"tracks": recommendations})
