@@ -32,6 +32,9 @@ def parsing(request):
 
             for track in tracks:
                 track_name = track.find("a", class_="d-track__title deco-link deco-link_stronger")
+                if track_name is None:
+                    track_name = track.find("span", class_="d-track__title deco-typo-secondary")
+
                 artist_name = track.find("a", class_="deco-link deco-link_muted")
 
                 tracks_list.append(track_name.text.lstrip().rstrip())
