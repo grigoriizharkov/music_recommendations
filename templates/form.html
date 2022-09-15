@@ -1,15 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>HOME</title>
 </head>
 <body>
+<main>
+    <section>
+        Сервис позволяет получить музыкальные рекомендации на основании открытого плейлиста в Яндекс Музыке. Для этого вставьте ссылку на плейлист
+        и укажите число песен, которые бы вы хотели получить в качестве рекомендованных.
+    </section>
     <h3>Вставте ссылку на открытый плейлист:</h3>
     <form method="POST">
         {% csrf_token %}
         <table>{{ form }}</table>
     <input type="submit" value="Send" >
     </form>
+</main>
 </body>
 </html>
