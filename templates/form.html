@@ -1,20 +1,34 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
     <title>HOME</title>
+    <style>
+        section {font-size: 14pt}
+        p {font-size: 14pt}
+        input {font-size: 12pt}
+    </style>
 </head>
 <body>
+<header>
+    <h1>Продолжение вашего плейлиста</h1>
+</header>
 <main>
     <section>
-        Сервис позволяет получить музыкальные рекомендации на основании открытого плейлиста в Яндекс Музыке. Для этого вставьте ссылку на плейлист
-        и укажите число песен, которые бы вы хотели получить в качестве рекомендованных.
+        Сервис позволяет получить музыкальные рекомендации на основании плейлиста в Яндекс Музыке. <br>
+        Для этого вставьте ссылку на <b>открытый</b> плейлист и укажите число песен,
+        которые бы вы хотели получить в качестве рекомендованных.
     </section>
-    <h3>Вставте ссылку на открытый плейлист:</h3>
+
+    <h2>Введите необходимые данные:</h2>
     <form method="POST">
         {% csrf_token %}
-        <table>{{ form }}</table>
-    <input type="submit" value="Send" >
+        <table>{{ form.as_p }}</table>
+
+    <input type="submit" value="Отправить" >
     </form>
 </main>
 </body>

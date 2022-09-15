@@ -1,15 +1,28 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
     <title>TRACKS</title>
+    <style>
+        li {font-size: 14pt}
+        button {font-size: 14pt}
+    </style>
 </head>
 <body>
-<ul>
+<main>
+    <div class="list">
+        <ul>
         {% for track in tracks %}
-        <li>{{ track }}</li>
+        <li>{{ track }} </li>
         {% endfor %}
-    </ul>
-<a href="{{request.META.HTTP_REFERER|escape}}">Назад</a>
+        </ul>
+    </div>
+<button>
+    <a href="{{request.META.HTTP_REFERER|escape}}">Назад</a>
+</button>
+</main>
 </body>
 </html>

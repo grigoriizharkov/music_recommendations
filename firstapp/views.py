@@ -9,12 +9,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import NearestNeighbors
 
 
-# TODO
-#  1) dataset cleaning (done, check for recommendation quality)
-#  3) expansion dataset via spotipy
-#  4) frontend using React?
-
-
 def parsing(request):
     if request.method == "POST":
         user_form = UserForm(request.POST)
