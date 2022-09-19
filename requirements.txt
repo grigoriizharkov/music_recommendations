@@ -1,5 +1,4 @@
 pip==22.1.2
-zlib==1.2.12
 wheel==0.37.1
 openssl==1.1.1q
 cryptography==37.0.1
