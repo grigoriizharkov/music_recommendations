@@ -112,7 +112,15 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'playlist-continuing@gmail.com' #С которого будет приходить сообщение
+EMAIL_HOST_PASSWORD = 'Agent_007'
+EMAIL_PORT = 587
 
+ADMINS = [
+    ('Grigorii', 'grigorii_al@mail.ru'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
