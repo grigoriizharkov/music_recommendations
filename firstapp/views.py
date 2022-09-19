@@ -35,6 +35,9 @@ def parsing(request):
 
                 tracks_list.append(track_name.text.lstrip().rstrip())
                 artists_list.append(artist_name.text.lstrip().rstrip())
+                
+            if len(tracks_list) == 0 or len(artists_list) == 0:
+            	raise ValueError
 
             return prediction(request, tracks_list, artists_list, number)
         else:
