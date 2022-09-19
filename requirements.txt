@@ -1,6 +1,5 @@
 pip==22.1.2
 wheel==0.37.1
-openssl==1.1.1q
 cryptography==37.0.1
 typing_extensions==4.1.1
 django==3.2.5
