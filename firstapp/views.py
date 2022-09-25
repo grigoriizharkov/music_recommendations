@@ -18,8 +18,7 @@ def parsing(request):
             number = user_form.cleaned_data['number']
 
             page = requests.get(url)
-            if page.status_code != 200:
-            	raise ConnectionError
+            
             soup = BeautifulSoup(page.content, "html.parser")
 
             tracks = soup.find_all("div", class_="d-track__overflowable-wrapper deco-typo-secondary block-layout")
